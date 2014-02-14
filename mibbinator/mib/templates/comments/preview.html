@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+              
+{% block title %}Preview comment{% endblock %}
+          
+{% block content %}
+<h2>Preview your comment</h2>
+        
+<form action="../post/" method="post">
+      
+  {% if comment_form.has_errors %}
+    <p class="error"><strong>Please correct the following errors.</strong></p>  {% else %}
+      
+  <ol id="comment-list">
+    <li id="c-{{comment.id}}">
+      <dl>
+        <dt>
+          <a class="user" href="/users/{{comment.user.username}}/">
+            {% if comment.user.get_profile.show_real_name %}
+              {{ comment.user.get_full_name }}
+            {% else %}
+              {{ comment.user }}
+            {% endif %}
+          </a>
+          <span class="date">{{ comment.submit_date|date:"M j, Y" }}</span>
+          <span class="time">{{ comment.submit_date|date:"P" }}</span>
+        </dt>
+        <dd>{{ comment.comment|escape }}</dd>
+      </dl>
+      <ul class="ratings-preview">
+      {% for rating in comment_form.ratings %}
+        <li><strong>{{ rating.choice }}:</strong> {{ rating.data }} (out of 5)</li>
+      {% endfor %}
+      </ul>
+    </li>
+  </ol>
+
+  <fieldset>
+  <label for="id_submit">Post</label>
+  <input type="submit" id="id_submit" name="post" value="Post comment" /></p>
+  </fieldset>
+
+
+  <h4>Or edit it again...</h4>
+  {% endif %}
+
+  {% if comment_form.username.errors or comment_form.password.errors %}
+    {% if comment_form.username.errors %}<p class="error">{{ comment_form.username.html_error_list }}</p>{% endif %}
+    <p><label for="id_username">Username:</label> {{ comment_form.username }}</p>
+    {% if comment_form.password.errors %}<p class="error">{{ comment_form.password.html_error_list }}</p>{% endif %}
+    <p><label for="id_password">Password:</label> {{ comment_form.password }}</p>
+  {% else %}
+    <p>User: <strong>{{ comment.user.get_profile.get_display_name }}</strong></p>
+  {% endif %}
+
+  {% if ratings_optional or ratings_required %}
+    <fieldset>
+    <table id="ratings">
+    <tr>
+      <th class="first">Rating</th>
+      {% for value in rating_range %}
+        <th>{{ value }}</th>
+      {% endfor %}
+    </tr>     {% for rating in comment_form.ratings %}
+      {% if rating.errors %}      <tr>
+        <td colspan="{{ rating_range|length }}">{{ rating.html_error_list }}</td>
+      </tr>      {% endif %}
+      <tr>
+        <th class="row">{{ rating.choice }}</th>        {% for formfield in rating.field_list %}
+        <td class="numeric">{{ formfield.field }}</td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+    </table>
+    <input type="hidden" name="rating_options" value="{{ rating_options }}" />
+    </fieldset>
+  {% endif %}
+
+  {% if comment_form.comment.errors %}{{ comment_form.comment.html_error_list }}{% endif %}
+  <fieldset>
+  <p><label for="id_comment">Comment:</label><br />{{ comment_form.comment }}</p>
+    <input type="hidden" name="options" value="{{ options }}" />
+    <input type="hidden" name="target" value="{{ target }}" />
+    <input type="hidden" name="gonzo" value="{{ hash }}" />
+  </fieldset>
+  <fieldset>
+    <label for="id_preview">Preview again</label>
+    <input type="submit" id="id_preview" name="preview" value="Preview revised comment" />
+  </fieldset>
+
+</form>
+
+{% endblock %}

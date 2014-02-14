@@ -1,0 +1,50 @@
+<html>
+<head>
+<title>{% block title %}Mibbinator{% endblock %}</title>
+<style type="text/css">
+<!--
+{# http://wellstyled.com/tools/colorscheme2/index-en.html?triad;52;0;240;0.5;1;-1;-1;1;-0.7;0.25;1;-1;-1;1;-0.7;0.25;1;0.5;1;-1;-1;1;-0.7;0.25;1;0.5;1;-1;-1;1;-0.7;0.25;1;0.5;1;0 #}
+body { background-color: #809fff; color: black; font-family: Baskerville, sans-serif; }
+.topbar { background-color: #00248f; color: white; }
+.sidebar { float: right; width: 20%; background-color: #00248f; color: white; height: 85%; }
+.topbar a, .sidebar a { color: white; }
+.title { font-family: Herculanum, serif; font-size: 140%; }
+.error, .errorlist { background-color: #ff6500; color: #ffd9bf; border: thin solid #b34700; }
+table { border: thin solid #0033cc; }
+.comment-heading, .comment-text { border: thin solid #b39000; }
+.comment-heading { border-bottom: double; }
+.comment-even { background-color: #fff3bf; }
+.comment-odd { background-color: #ffe780; }
+
+-->
+</style>
+</head>
+<body>
+<div class="topbar">
+<span class="title">MIBbinator</span>
+<span style="float: right">
+{% if user.is_anonymous %}
+<a href="/accounts/login/">log in</a> |
+<a href="/accounts/register/">register</a>
+{% else %}
+logged in as {{ user }} |
+<a href="/accounts/profile/">profile</a> |
+<a href="/accounts/logout/">log out</a>
+{% endif %}
+</span>
+</div>
+<div class="sidebar">
+{% block sidebar %}
+Yup, I've got a sidebar.
+It's on the right hand side!
+Is that unusual?
+{% endblock %}
+</div>
+<div class="content">
+{% block main_content %}
+{% endblock %}
+{% block content %}
+{% endblock %}
+</div>
+</body>
+</html>

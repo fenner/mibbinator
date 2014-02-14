@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load comments.comments %}
+
+{% block title %}OID Browse - {{ oid }}{% endblock %}
+
+{% block content %}
+<h1>OID Browser</h1>
+
+<h2>OID: {{ oid }}</h2>
+
+<table border="1">
+<tr><th>Module</th><th>Object Name</th><th>Status</th></tr>
+{% for object in objects %}
+<tr>
+<td>{{ object.module }} / {{ object.module.source }}</td>
+<td>{{ object.object }} ({{ object.type }})</td>
+<td>{{ object.status }} / {{ object.module.srcstat }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<p>Parent: <a href="{{ parent }}">{{ parent }}</a></p>
+
+{% if children %}
+<table border="1">
+<caption>Children</caption>
+<tr><th>OID</th><th>Name(s)</th></tr>
+{% for child in children %}
+<tr><td><a href="{{ child.oid }}">{{ child.oid }}</a></td><td>{{ child.names|join:" | " }}</td></tr>
+{% endfor %}
+</table>
+{% endif %}
+
+{% if thisoid %}
+{% get_comment_list for mib.OID thisoid.id as comments %}
+<a name="comments"></a>
+{% for comment in comments %}
+<div class="comment-{% cycle odd,even %}">
+<div class="comment-heading">
+{{ comment.user.username }} @ {{ comment.submit_date }}
+| Rating: {{ comment.get_karma_total }}
+{% ifnotequal comment.user user %}
+<a href="/comments/karma/vote/{{ comment.id }}/up/">+</a> |
+<a href="/comments/karma/vote/{{ comment.id }}/down/">-</a>
+{% endifnotequal %}
+</div>
+<div class="comment-text">
+{{ comment.comment|escape|linebreaksbr }}
+</div>
+</div>
+{% endfor %}
+{% comment_form for mib.OID thisoid.id with is_public yes %}
+{% endif %}
+
+{% endblock %}

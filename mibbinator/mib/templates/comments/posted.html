@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Comment posted{% endblock %}
+
+{% block content %}
+
+<h2>Comment posted successfully</h2>
+
+<p>Thanks for contributing.</p>
+
+{% if object %}
+<ul>
+  <li><a href="{{ object.get_absolute_url }}#comments">View your comment</a></li>
+</ul>
+{% endif %}
+
+{% endblock %}
+
